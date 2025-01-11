@@ -10,6 +10,7 @@ import MenuCategory from "./MenuCategory";
 
 const OurMenu = () => {
   const [menu] = useMenu();
+  console.log(menu);
   const desserts = menu.filter((item) => item.category === "dessert");
   const soup = menu.filter((item) => item.category === "soup");
   const salad = menu.filter((item) => item.category === "salad");

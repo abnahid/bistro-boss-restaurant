@@ -1,14 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
 import Dashboard from "../layouts/Dashboard";
 import MainLayout from "../layouts/MainLayout";
+import AddItems from "../Page/Dashboard/AddItems";
 import AllUsers from "../Page/Dashboard/AllUsers";
 import Cart from "../Page/Dashboard/Cart";
+import ManageItems from "../Page/Dashboard/ManageItems";
+import UpdateItem from "../Page/Dashboard/UpdateItem";
 import ErrorPage from "../Page/ErrorPage";
 import Home from "../Page/Home";
 import Login from "../Page/Login";
 import OurMenu from "../Page/Menu/OurMenu";
 import Order from "../Page/Order/Order";
 import Register from "../Page/Register";
+import AdminRoute from "./../context/AdminRoute";
 
 const router = createBrowserRouter(
   [
@@ -52,7 +56,37 @@ const router = createBrowserRouter(
         },
         {
           path: "users",
-          element: <AllUsers></AllUsers>,
+          element: (
+            <AdminRoute>
+              <AllUsers></AllUsers>
+            </AdminRoute>
+          ),
+        },
+        {
+          path: "addItems",
+          element: (
+            <AdminRoute>
+              <AddItems></AddItems>
+            </AdminRoute>
+          ),
+        },
+        {
+          path: "manageItems",
+          element: (
+            <AdminRoute>
+              <ManageItems></ManageItems>
+            </AdminRoute>
+          ),
+        },
+        {
+          path: "updateItem/:id",
+          element: (
+            <AdminRoute>
+              <UpdateItem></UpdateItem>
+            </AdminRoute>
+          ),
+          loader: ({ params }) =>
+            fetch(`http://localhost:5000/menu/${params.id}`),
         },
       ],
     },
