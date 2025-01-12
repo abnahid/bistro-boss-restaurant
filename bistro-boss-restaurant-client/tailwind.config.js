@@ -21,7 +21,7 @@ export default {
     themes: [
       {
         mytheme: {
-          primary: "#5C54AB",
+          primary: "#D1A054",
           secondary: "#11142D",
           accent: "#FF7A00",
           neutral: "#333333",
@@ -34,7 +34,7 @@ export default {
           error: "#F87272",
         },
         mydarktheme: {
-          primary: "#5C54AB",
+          primary: "#D1A054",
           secondary: "#1F2937",
           accent: "#FFAF66",
           neutral: "#1E1E2F",

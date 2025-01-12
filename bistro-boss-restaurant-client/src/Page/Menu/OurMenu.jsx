@@ -1,5 +1,5 @@
+import menuImg from "../../assets/menu/banner3.jpg";
 import dessertImg from "../../assets/menu/dessert-bg.jpeg";
-import menuImg from "../../assets/menu/menu-bg.png";
 import pizzaImg from "../../assets/menu/pizza-bg.jpg";
 import saladImg from "../../assets/menu/salad-bg.jpg";
 import soupImg from "../../assets/menu/soup-bg.jpg";
@@ -10,7 +10,6 @@ import MenuCategory from "./MenuCategory";
 
 const OurMenu = () => {
   const [menu] = useMenu();
-  console.log(menu);
   const desserts = menu.filter((item) => item.category === "dessert");
   const soup = menu.filter((item) => item.category === "soup");
   const salad = menu.filter((item) => item.category === "salad");

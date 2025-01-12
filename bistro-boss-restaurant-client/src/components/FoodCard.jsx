@@ -27,7 +27,7 @@ const FoodCard = ({ item }) => {
         console.log(res.data);
         if (res.data.insertedId) {
           Swal.fire({
-            position: "top-end",
+            position: "center",
             icon: "success",
             title: `${name} added to your cart`,
             showConfirmButton: false,
@@ -39,7 +39,7 @@ const FoodCard = ({ item }) => {
       });
     } else {
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: "error",
         title: "Please log in to add items to your cart",
         showConfirmButton: false,

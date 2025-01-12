@@ -1,10 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
 import Dashboard from "../layouts/Dashboard";
 import MainLayout from "../layouts/MainLayout";
+import Contact from "../Page/Contact/Contact";
 import AddItems from "../Page/Dashboard/AddItems";
 import AllUsers from "../Page/Dashboard/AllUsers";
 import Cart from "../Page/Dashboard/Cart";
 import ManageItems from "../Page/Dashboard/ManageItems";
+import Payment from "../Page/Dashboard/Payment/Payment";
+import PaymentHistory from "../Page/Dashboard/Payment/PaymentHistory";
+import RateUs from "../Page/Dashboard/RateUs";
+import Reservation from "../Page/Dashboard/Reservation";
 import UpdateItem from "../Page/Dashboard/UpdateItem";
 import ErrorPage from "../Page/ErrorPage";
 import Home from "../Page/Home";
@@ -37,6 +42,10 @@ const router = createBrowserRouter(
         },
 
         {
+          path: "contact-us",
+          element: <Contact></Contact>,
+        },
+        {
           path: "/login",
           element: <Login></Login>,
         },
@@ -53,6 +62,22 @@ const router = createBrowserRouter(
         {
           path: "cart",
           element: <Cart></Cart>,
+        },
+        {
+          path: "payment",
+          element: <Payment></Payment>,
+        },
+        {
+          path: "paymentHistory",
+          element: <PaymentHistory></PaymentHistory>,
+        },
+        {
+          path: "reservation",
+          element: <Reservation></Reservation>,
+        },
+        {
+          path: "review",
+          element: <RateUs></RateUs>,
         },
         {
           path: "users",

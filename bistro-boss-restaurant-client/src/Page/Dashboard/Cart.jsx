@@ -1,4 +1,5 @@
 import { FaTrashAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useCart from "../../hooks/useCart";
@@ -40,16 +41,26 @@ const Cart = () => {
         subHeading="Hurry Up!"
         heading="MANAGE ALL ITEMS"
       ></SectionTitle>
-      <div className="bg-white p-8 mt-10 text-black">
+      <div className="bg-white dark:bg-gray-800 p-8 mt-10 text-black dark:text-gray-200">
         <div className="flex justify-evenly my-8">
-          <h2 className="text-4xl">Items: {cart.length}</h2>
-          <h2 className="text-4xl">Total Price: {totalPrice}</h2>
-          <button className="btn btn-primary">Pay</button>
+          <h2 className="text-4xl dark:text-gray-300">Items: {cart.length}</h2>
+          <h2 className="text-4xl dark:text-gray-300">
+            Total Price: ${totalPrice}
+          </h2>
+          {cart.length ? (
+            <Link to="/dashboard/payment">
+              <button className="btn btn-primary">Pay</button>
+            </Link>
+          ) : (
+            <button disabled className="btn btn-primary">
+              Pay
+            </button>
+          )}
         </div>
         <div className="overflow-x-auto">
-          <table className="table  w-full">
+          <table className="table w-full">
             {/* head */}
-            <thead className="bg-Primary text-white rounded-tl-2xl rounded-tr-2xl">
+            <thead className="bg-Primary text-white dark:bg-Primary rounded-tl-2xl rounded-tr-2xl">
               <tr>
                 <th>#</th>
                 <th>Image</th>
@@ -60,8 +71,8 @@ const Cart = () => {
             </thead>
             <tbody>
               {cart.map((item, index) => (
-                <tr key={item._id}>
-                  <th>{index + 1}</th>
+                <tr key={item._id} className="dark:border-gray-700">
+                  <th className="dark:text-gray-300">{index + 1}</th>
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="avatar">
@@ -74,14 +85,14 @@ const Cart = () => {
                       </div>
                     </div>
                   </td>
-                  <td>{item.name}</td>
-                  <td>${item.price}</td>
+                  <td className="dark:text-gray-300">{item.name}</td>
+                  <td className="dark:text-gray-300">${item.price}</td>
                   <th>
                     <button
                       onClick={() => handleDelete(item._id)}
                       className="btn btn-ghost btn-lg"
                     >
-                      <FaTrashAlt className="text-red-600"></FaTrashAlt>
+                      <FaTrashAlt className="text-red-600 dark:text-red-400"></FaTrashAlt>
                     </button>
                   </th>
                 </tr>
