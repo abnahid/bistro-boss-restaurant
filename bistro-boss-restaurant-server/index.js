@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const app = express();
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_TOKEN_SECRET);
 
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -17,23 +18,6 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
-
-// const verifyToken = (req, res, next) => {
-//   const token = req.cookies?.token;
-
-//   if (!token) {
-//     return res.status(401).send({ message: "unauthorized access" });
-//   }
-
-//   // verify the token
-//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-//     if (err) {
-//       return res.status(401).send({ message: "unauthorized access" });
-//     }
-//     req.user = decoded;
-//     next();
-//   });
-// };
 
 const uri = `mongodb+srv://${process.env.COLLABOR_IQ_USER}:${process.env.COLLABOR_IQ_USER_PASS}@cluster0.cx0gq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -51,6 +35,7 @@ async function run() {
     const reviewCollection = client.db("BistoBossRes").collection("review");
     const cartCollection = client.db("bistroDb").collection("carts");
     const usersCollection = client.db("bistroDb").collection("users");
+    const paymentCollection = client.db("BistoBossRes").collection("payments");
 
     // jwt related api
     app.post("/jwt", async (req, res) => {
@@ -63,7 +48,6 @@ async function run() {
 
     // middlewares
     const verifyToken = (req, res, next) => {
-      console.log("inside verify token", req.headers.authorization);
       if (!req.headers.authorization) {
         return res.status(401).send({ message: "unauthorized access" });
       }
@@ -168,15 +152,21 @@ async function run() {
       res.status(201).send(result);
     });
 
-    app.put("/menu/:id", async (req, res) => {
+    app.patch("/menu/:id", async (req, res) => {
+      const item = req.body;
       const id = req.params.id;
-      const updatingData = req.body;
       const filter = { _id: new ObjectId(id) };
-      const options = { upsert: true };
-      const updateDoc = {
-        $set: updatingData,
+      const updatedDoc = {
+        $set: {
+          name: item.name,
+          category: item.category,
+          price: item.price,
+          recipe: item.recipe,
+          image: item.image,
+        },
       };
-      const result = await menuCollection.updateOne(filter, updateDoc, options);
+
+      const result = await menuCollection.updateOne(filter, updatedDoc);
       res.send(result);
     });
 
@@ -237,6 +227,47 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await cartCollection.deleteOne(query);
       res.send(result);
+    });
+
+    // add To payment-intent
+    app.post("/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price * 100);
+      console.log(amount, "amount inside the intent");
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+
+    app.get("/payments/:email", verifyToken, async (req, res) => {
+      const query = { email: req.params.email };
+      if (req.params.email !== req.decoded.email) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      const result = await paymentCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.post("/payments", async (req, res) => {
+      const payment = req.body;
+      const paymentResult = await paymentCollection.insertOne(payment);
+
+      const query = {
+        _id: {
+          $in: payment.cartIds.map((id) => new ObjectId(id)),
+        },
+      };
+
+      const deleteResult = await cartCollection.deleteMany(query);
+
+      res.send({ paymentResult, deleteResult });
     });
 
     console.log(
